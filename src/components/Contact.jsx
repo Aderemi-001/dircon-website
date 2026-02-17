@@ -62,13 +62,19 @@ const Contact = () => {
 
                     {/* Contact Form */}
                     <div className="lg:col-span-2 bg-white rounded-lg shadow-xl border border-gold/10 p-8 md:p-10">
-                        <form className="space-y-6">
+                        <form
+                            action="https://formspree.io/f/xeelkvyn"
+                            method="POST"
+                            className="space-y-6"
+                        >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                                     <input
                                         type="text"
                                         id="name"
+                                        name="name"
+                                        required
                                         className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
                                         placeholder="John Doe"
                                     />
@@ -78,6 +84,8 @@ const Contact = () => {
                                     <input
                                         type="email"
                                         id="email"
+                                        name="email"
+                                        required
                                         className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
                                         placeholder="john@company.com"
                                     />
@@ -88,6 +96,7 @@ const Contact = () => {
                                 <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
                                 <select
                                     id="subject"
+                                    name="subject"
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-gray-600"
                                 >
                                     <option>General Inquiry</option>
@@ -103,7 +112,9 @@ const Contact = () => {
                                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
                                 <textarea
                                     id="message"
+                                    name="message"
                                     rows="4"
+                                    required
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
                                     placeholder="How can we help your business?"
                                 ></textarea>
