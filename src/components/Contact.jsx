@@ -1,7 +1,39 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 
 const Contact = () => {
+    const [submitting, setSubmitting] = useState(false);
+    const [succeeded, setSucceeded] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+
+        const form = e.target;
+        const data = new FormData(form);
+
+        try {
+            const response = await fetch("https://formspree.io/f/xeelkvyn", {
+                method: "POST",
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                setSucceeded(true);
+                form.reset();
+            } else {
+                alert("Something went wrong. Please try again.");
+            }
+        } catch (error) {
+            alert("Error sending message. Please try again later.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <section id="contact" className="py-20 bg-white">
             <div className="container mx-auto px-4">
@@ -62,72 +94,87 @@ const Contact = () => {
 
                     {/* Contact Form */}
                     <div className="lg:col-span-2 bg-white rounded-lg shadow-xl border border-gold/10 p-8 md:p-10">
-                        <form
-                            action="https://formspree.io/f/xeelkvyn"
-                            method="POST"
-                            className="space-y-6"
-                        >
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        required
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
-                                        placeholder="John Doe"
-                                    />
+                        {succeeded ? (
+                            <div className="h-full flex flex-col items-center justify-center text-center py-10">
+                                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
+                                    <CheckCircle size={32} />
                                 </div>
-                                <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        required
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
-                                        placeholder="john@company.com"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                <select
-                                    id="subject"
-                                    name="subject"
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-gray-600"
+                                <h3 className="text-2xl font-bold text-black mb-2">Message Sent!</h3>
+                                <p className="text-gray-600 max-w-md">
+                                    Thank you for contacting Dircon Consulting. We have received your message and will get back to you shortly.
+                                </p>
+                                <button
+                                    onClick={() => setSucceeded(false)}
+                                    className="mt-8 text-gold border-b-2 border-gold pb-1 hover:text-black hover:border-black transition-colors font-medium"
                                 >
-                                    <option>General Inquiry</option>
-                                    <option>Accounting & Audit</option>
-                                    <option>Business Advisory</option>
-                                    <option>Specialized Services (NIN/Visa)</option>
-                                    <option>Real Estate</option>
-                                    <option>Other</option>
-                                </select>
+                                    Send another message
+                                </button>
                             </div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            required
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
+                                            placeholder="John Doe"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            required
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
+                                            placeholder="john@company.com"
+                                        />
+                                    </div>
+                                </div>
 
-                            <div>
-                                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    rows="4"
-                                    required
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
-                                    placeholder="How can we help your business?"
-                                ></textarea>
-                            </div>
+                                <div>
+                                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                    <select
+                                        id="subject"
+                                        name="subject"
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors text-gray-600"
+                                    >
+                                        <option>General Inquiry</option>
+                                        <option>Accounting & Audit</option>
+                                        <option>Business Advisory</option>
+                                        <option>Specialized Services (NIN/Visa)</option>
+                                        <option>Real Estate</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
 
-                            <button
-                                type="submit"
-                                className="w-full bg-black text-gold font-bold py-4 rounded-sm hover:bg-gray-900 transition-colors flex items-center justify-center"
-                            >
-                                Send Message
-                                <Send size={18} className="ml-2" />
-                            </button>
-                        </form>
+                                <div>
+                                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        rows="4"
+                                        required
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition-colors"
+                                        placeholder="How can we help your business?"
+                                    ></textarea>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="w-full bg-black text-gold font-bold py-4 rounded-sm hover:bg-gray-900 transition-colors flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+                                >
+                                    {submitting ? 'Sending...' : 'Send Message'}
+                                    {!submitting && <Send size={18} className="ml-2" />}
+                                </button>
+                            </form>
+                        )}
                     </div>
                 </div>
             </div>
